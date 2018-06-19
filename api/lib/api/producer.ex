@@ -17,7 +17,11 @@ defmodule Api.Producer do
 
   def handle_call({:event, event}, from, {queue, pending_demand}) do
     queue = :queue.in({from, event}, queue)
-    dispatch_events(queue, pending_demand, [])
+    if :queue.len(queue) > 99 do
+      dispatch_events(queue, pending_demand, [])
+    else
+      {:noreply, [], {queue, pending_demand}}
+    end
   end
 
   def handle_demand(incoming_demand, {queue, pending_demand}) do
