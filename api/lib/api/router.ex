@@ -5,7 +5,9 @@ defmodule Api.Router do
     plug :accepts, ["json"]
   end
 
-  scope "/api", Api do
+  scope "/", Api do
     pipe_through :api
+
+    get "/", PageController, :index
   end
 end
