@@ -5,6 +5,8 @@ defmodule Api.PageController do
 
     #Db.Repo.insert_all("visits", [%{remote_ip: inspect(conn.remote_ip), host: conn.host, request_path: conn.request_path}])
 
+    Api.Producer.record_visit(%{remote_ip: inspect(conn.remote_ip), host: conn.host, request_path: conn.request_path})
+
     conn
     |> render("index.json")
   end

@@ -36,7 +36,8 @@ defmodule Api.Mixfile do
       {:phoenix_pubsub, "~> 1.0"},
       {:gettext, "~> 0.11"},
       {:cowboy, "~> 1.0"},
-      {:db, path: "../db"}
+      {:db, path: "../db"},
+      {:gen_stage, "~> 0.14"}
     ]
   end
 end
