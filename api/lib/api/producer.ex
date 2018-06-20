@@ -12,15 +12,36 @@ defmodule Api.Producer do
   ## Callbacks
 
   def init(:ok) do
-    {:producer, :state_does_not_matter, dispatcher: GenStage.BroadcastDispatcher, buffer_size: :infinity}
+    {:producer, {:queue.new, 0}, dispatcher: GenStage.DemandDispatcher}
   end
 
-  def handle_call({:event, event}, _from, state) do
-    {:reply, :ok, [event], state}
+  def handle_call({:event, event}, from, {queue, pending_demand}) do
+    queue = :queue.in({from, event}, queue)
+
+    if :queue.len(queue) >= 200 do
+      dispatch_events(queue, pending_demand, [])
+    else
+      {:noreply, [], {queue, pending_demand}}
+    end
   end
 
-  def handle_demand(_demand, state) do
-    {:noreply, [], state}
+  def handle_demand(incoming_demand, {queue, pending_demand}) do
+    IO.inspect(incoming_demand)
+    dispatch_events(queue, incoming_demand + pending_demand, [])
+  end
+
+  defp dispatch_events(queue, 0, events) do
+    {:noreply, Enum.reverse(events), {queue, 0}}
+  end
+
+  defp dispatch_events(queue, demand, events) do
+    case :queue.out(queue) do
+      {{:value, {from, event}}, queue} ->
+        GenStage.reply(from, :ok)
+        dispatch_events(queue, demand - 1, [event | events])
+      {:empty, queue} ->
+        {:noreply, Enum.reverse(events), {queue, demand}}
+    end
   end
 end
 
