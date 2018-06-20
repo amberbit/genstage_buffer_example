@@ -6,7 +6,7 @@ defmodule Api.Consumer do
   end
 
   def init(:ok) do
-    {:consumer, :state_does_not_matter, subscribe_to: [{Api.Producer, min_demand: 100, max_demand: 200}]}
+    {:consumer, :state_does_not_matter, subscribe_to: [{Api.Producer, max_demand: 100}]}
   end
 
   def handle_subscribe(:producer, _opts, from, state) do

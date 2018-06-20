@@ -3,7 +3,9 @@ defmodule Api.PageController do
 
   def index(conn, _params) do
 
-    # Db.Repo.insert_all("visits", [%{remote_ip: inspect(conn.remote_ip), host: conn.host, request_path: conn.request_path}])
+    #Task.start(fn() ->
+    #  Db.Repo.insert_all("visits", [%{remote_ip: inspect(conn.remote_ip), host: conn.host, request_path: conn.request_path}])
+    #end)
 
     Api.Producer.record_visit(%{remote_ip: inspect(conn.remote_ip), host: conn.host, request_path: conn.request_path})
 

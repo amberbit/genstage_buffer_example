@@ -12,17 +12,14 @@ defmodule Api.Producer do
   ## Callbacks
 
   def init(:ok) do
-    {:producer, {:queue.new, 0}, dispatcher: GenStage.BroadcastDispatcher}
+    {:producer, :state_does_not_matter, dispatcher: GenStage.BroadcastDispatcher, buffer_size: :infinity}
   end
 
   def handle_call({:event, event}, _from, state) do
-    # Dispatch immediately *to the buffer*
     {:reply, :ok, [event], state}
   end
 
   def handle_demand(_demand, state) do
-    # We don't care about the demand, BroadcastDispatcher takes care of
-    # sending requested amount of events downstream.
     {:noreply, [], state}
   end
 end
