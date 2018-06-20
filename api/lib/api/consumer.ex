@@ -6,20 +6,11 @@ defmodule Api.Consumer do
   end
 
   def init(:ok) do
-    Process.send_after(self(), :ask, 50)
-
-    {:consumer, %{subscription: nil}, subscribe_to: [Api.Producer]}
+    {:consumer, :state_does_not_matter, subscribe_to: [{Api.Producer, min_demand: 100, max_demand: 200}]}
   end
 
   def handle_subscribe(:producer, _opts, from, state) do
-    {:automatic, %{subscription: from}}
-  end
-
-  def handle_info(:ask, state) do
-    GenStage.ask(state.subscription, 100)
-    Process.send_after(self(), :ask, 50)
-
-    {:noreply, [], state}
+    {:automatic, state}
   end
 
   def handle_events(events, _from, state) do

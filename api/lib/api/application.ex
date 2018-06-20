@@ -12,7 +12,7 @@ defmodule Api.Application do
       supervisor(Api.Endpoint, []),
       Api.Producer,
       Supervisor.child_spec(Api.Consumer, id: :consumer_1),
-      Supervisor.child_spec(Api.Consumer, id: :consumer_2),
+      #Supervisor.child_spec(Api.Consumer, id: :consumer_2),
       # Start your own worker by calling: Api.Worker.start_link(arg1, arg2, arg3)
       # worker(Api.Worker, [arg1, arg2, arg3]),
     ]
